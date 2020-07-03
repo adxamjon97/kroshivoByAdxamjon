@@ -99,36 +99,6 @@ window.addEventListener('resize', (event) => {
         window.location.reload()
     }, 1500)
 })
-// sichqonchadan foydalanish uchun sensordan foydalanamiza
-function onTouch(evt) {
-    evt.preventDefault();
-    if (evt.touches.length > 1 || (evt.type == "touchend" && evt.touches.length > 0))
-      return;
-  
-    var newEvt = document.createEvent("MouseEvents");
-    var type = null;
-    var touch = null;
-  
-    switch (evt.type) {
-      case "touchstart": 
-        type = "mousedown";
-        touch = evt.changedTouches[0];
-        break;
-      case "touchmove":
-        type = "mousemove";
-        touch = evt.changedTouches[0];
-        break;
-      case "touchend":        
-        type = "mouseup";
-        touch = evt.changedTouches[0];
-        break;
-    }
-  
-    newEvt.initMouseEvent(type, true, true, evt.originalTarget.ownerDocument.defaultView, 0,
-      touch.screenX, touch.screenY, touch.clientX, touch.clientY,
-      evt.ctrlKey, evt.altKey, evt.shiftKey, evt.metaKey, 0, null);
-    evt.originalTarget.dispatchEvent(newEvt);
-  }
 
 var path = { x: 0, y: 0 }
 const speed = 15   // tezlik
@@ -136,7 +106,7 @@ function husob(){ // harakatlanish kordinatasini husoblash
     let a = kord.x1-kord.x2
     let b = kord.y1-kord.y2
     let c = Math.sqrt(a**2 + b**2)
-    path = { x: -a/c * speed, y: -b/c * speed }
+    path = { x: -a/c * c/30, y: -b/c * c/30 }
 }
 
 function boshlandi(){
