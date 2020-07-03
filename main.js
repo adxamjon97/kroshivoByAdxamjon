@@ -20,7 +20,7 @@ let pong = new Audio()
 pong.src = "ping-pong.mp3"
 
 var ekran = {
-    width:  document.documentElement.clientWidth/3,
+    width:  document.documentElement.clientWidth<=560?document.documentElement.clientWidth:560,
     height: document.documentElement.clientHeight-4
 }
 
