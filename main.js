@@ -29,7 +29,7 @@ can.height = ekran.height
 
 can.style.backgroundColor = '#bbb'
 body.style.backgroundColor = "black"
-div.style.textAlign = 'center'
+// div.style.textAlign = 'center'
 
 var mouse = {
     x: ekran.width/2,
@@ -48,6 +48,14 @@ var kord = {
     x2: 0, y2: 0
 }
 var bosildimi = false
+document.addEventListener('touchstart', (e)=>{
+    kord.x1 = ekran.width/2
+    kord.y1 = tusiqcha
+    bosildimi = true
+    quyvarildimi = false
+    path = { x: 0, y: 0 } 
+})
+
 can.addEventListener('mousedown', (e)=>{
     kord.x1 = ekran.width/2
     kord.y1 = tusiqcha
@@ -56,15 +64,27 @@ can.addEventListener('mousedown', (e)=>{
     path = { x: 0, y: 0 } 
 })
 
-can.addEventListener('mousemove', (e) => {
-    mouse.x = e.offsetX
-    mouse.y = e.offsetY
+document.addEventListener('touchmove', (e) => {
+    mouse.x = e.changedTouches[0].pageX
+    mouse.y = e.changedTouches[0].pageY
 })
 
+can.addEventListener('mousemove', (e) => {
+    mouse.x = e.pageX
+    mouse.y = e.pageY
+})
+
+document.addEventListener('touchend',(e) => {
+    kord.x2 = e.changedTouches[0].pageX
+    kord.y2 = e.changedTouches[0].pageY
+    bosildimi = false
+    quyvarildimi = true
+    if(kord.x1!==kord.x2 && kord.y1!==kord.y2) husob()
+})
 var quyvarildimi = false
 can.addEventListener('mouseup',(e) => {
-    kord.x2 = e.offsetX
-    kord.y2 = e.offsetY
+    kord.x2 = e.pageX
+    kord.y2 = e.pageY
     bosildimi = false
     quyvarildimi = true
     if(kord.x1!==kord.x2 && kord.y1!==kord.y2) husob()
