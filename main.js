@@ -44,54 +44,41 @@ class sharik{
 }
 
 var kord = {
-    x1: 0, y1: 0,
+    x1: ekran.width/2, y1: 0,
     x2: 0, y2: 0
 }
 var bosildimi = false
-document.addEventListener('touchstart', (e)=>{
-    kord.x1 = ekran.width/2
+function down(){
+    // kord.x1 = ekran.width/2
     kord.y1 = tusiqcha
     bosildimi = true
     quyvarildimi = false
     path = { x: 0, y: 0 } 
-})
+}
+document.addEventListener('touchstart', down)
+can.addEventListener('mousedown', down)
 
-can.addEventListener('mousedown', (e)=>{
-    kord.x1 = ekran.width/2
-    kord.y1 = tusiqcha
-    bosildimi = true
-    quyvarildimi = false
-    path = { x: 0, y: 0 } 
-})
-
-document.addEventListener('touchmove', (e) => {
-    mouse.x = e.changedTouches[0].pageX
-    mouse.y = e.changedTouches[0].pageY
-})
-
-can.addEventListener('mousemove', (e) => {
+function move(e){
     mouse.x = e.pageX
     mouse.y = e.pageY
-})
+}
+document.addEventListener('touchmove', (e) => move(e.changedTouches[0]))
+can.addEventListener('mousemove', move)
 
-document.addEventListener('touchend',(e) => {
-    kord.x2 = e.changedTouches[0].pageX
-    kord.y2 = e.changedTouches[0].pageY
-    bosildimi = false
-    quyvarildimi = true
-    if(kord.x1!==kord.x2 && kord.y1!==kord.y2) husob()
-})
-var quyvarildimi = false
-can.addEventListener('mouseup',(e) => {
+function up(e){
     kord.x2 = e.pageX
     kord.y2 = e.pageY
     bosildimi = false
     quyvarildimi = true
     if(kord.x1!==kord.x2 && kord.y1!==kord.y2) husob()
-})
-document.addEventListener('contextmenu',(e)=>{
+}
+document.addEventListener('touchend',(e) => up(e.changedTouches[0]))
+var quyvarildimi = false
+can.addEventListener('mouseup', up)
+document.addEventListener('contextmenu', (e) => {
     e.preventDefault()
 })
+
 // FIX: sayt zagruska bo'lmasdan grafik xajmi o'zgarishi kerek
 window.addEventListener('resize', (event) => {
     clearTimeout(resizeTimeout)
@@ -106,7 +93,7 @@ function husob(){ // harakatlanish kordinatasini husoblash
     let a = kord.x1-kord.x2
     let b = kord.y1-kord.y2
     let c = Math.sqrt(a**2 + b**2)
-    path = { x: -a/c * c/30, y: -b/c * c/30 }
+    path = { x: -a/c * speed, y: -b/c * speed }
 }
 
 function boshlandi(){
@@ -194,6 +181,12 @@ function ren(){
             pong.play()
         } else ellips(harakat.x, harakat.y)
         
+        if(harakat.y >= tusiq.y1 && path.y > 0){
+            path = { x: 0, y: 0 }
+            kord.x1 = harakat.x
+
+        }
+
         harakat.x += path.x
         harakat.y += path.y
     }
