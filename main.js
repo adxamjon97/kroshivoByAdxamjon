@@ -18,7 +18,7 @@ let ctx = can.getContext("2d")
 
 let start = new Audio()
 start.src = "start.mp3"
-start.play()
+// start.play()
 let ping = new Audio()
 ping.src = "pong.mp3"
 let pong = new Audio()
@@ -40,11 +40,15 @@ body.style.backgroundColor = "black"
 var mouse = { x: 0, y: 0 }
 // sharlarni ko'p qilib yaratish uchun
 class sharik{
-    constructor(x, y){ // yo'naltirilgan kordinatlari
-        this.x = x 
+    // fix construktor o'zgaruvchilarini obyekt ko'rinishida qabul qilish
+    constructor(startX, startY, x, y,toX, toY){ // yo'naltirilgan kordinatlari
+        this.startX = startX
+        this.startY = startY  // boshlang'ich kordinatasi
+        this.x = x //turgan kordinatasi
         this.y = y
+        this.toX = toX // qo'shilib boruvchi kordinatasi
+        this.toY = toY
     }
- 
 }
 
 var kord = {
