@@ -16,8 +16,14 @@ body.appendChild(div).appendChild(can)
 
 let ctx = can.getContext("2d")
 
+let start = new Audio()
+start.src = "start.mp3"
+start.play()
+let ping = new Audio()
+ping.src = "pong.mp3"
 let pong = new Audio()
-pong.src = "ping-pong.mp3"
+pong.src = "pong.mp3"
+
 
 var ekran = {
     width:  document.documentElement.clientWidth<=560?document.documentElement.clientWidth:560,
@@ -31,16 +37,14 @@ can.style.backgroundColor = '#bbb'
 body.style.backgroundColor = "black"
 // div.style.textAlign = 'center'
 
-var mouse = {
-    x: ekran.width/2,
-    y: ekran.height/2
-}
+var mouse = { x: 0, y: 0 }
 // sharlarni ko'p qilib yaratish uchun
 class sharik{
     constructor(x, y){ // yo'naltirilgan kordinatlari
         this.x = x 
         this.y = y
     }
+ 
 }
 
 var kord = {
@@ -65,19 +69,22 @@ function move(e){
 document.addEventListener('touchmove', (e) => move(e.changedTouches[0]))
 can.addEventListener('mousemove', move)
 
+var quyvarildimi = false
 function up(e){
     kord.x2 = e.pageX
     kord.y2 = e.pageY
     bosildimi = false
     quyvarildimi = true
     if(kord.x1!==kord.x2 && kord.y1!==kord.y2) husob()
+    document.removeEventListener('touchstart', down)
+    can.removeEventListener("mousedown", down)
+    document.removeEventListener('touchend', (e) => up(e.changedTouches[0]))
+    can.removeEventListener("mouseup", up)
+    
 }
 document.addEventListener('touchend',(e) => up(e.changedTouches[0]))
-var quyvarildimi = false
 can.addEventListener('mouseup', up)
-document.addEventListener('contextmenu', (e) => {
-    e.preventDefault()
-})
+document.addEventListener('contextmenu', (e) => { e.preventDefault() })
 
 // FIX: sayt zagruska bo'lmasdan grafik xajmi o'zgarishi kerek
 window.addEventListener('resize', (event) => {
@@ -113,6 +120,7 @@ function ellips(x, y){
     ctx.fill()
 }
 
+var lvl = 1
 function analiz(){
     ctx.font = "20px arial"
     
@@ -168,9 +176,9 @@ function ren(){
     if(quyvarildimi){
         // devorlarga urilganda yo'nalishni o'zgartiradi
         if(devor.x1 >= harakat.x-radius || devor.x2+devor.x1 <= harakat.x+radius){
-            pong.load()
+            ping.load()
             path.x = -path.x
-            pong.play()
+            ping.play()
         } else ellips(harakat.x, harakat.y)
         
         if(devor.y1 >= harakat.y-radius || devor.y2+devor.y1 <= harakat.y+radius){
@@ -182,7 +190,11 @@ function ren(){
         if(harakat.y >= tusiq.y1 && path.y > 0){
             path = { x: 0, y: 0 }
             kord.x1 = harakat.x
-
+            document.addEventListener('touchstart', down)
+            can.addEventListener('mousedown', down)
+            document.addEventListener('touchend',(e) => up(e.changedTouches[0]))
+            can.addEventListener('mouseup', up)
+            lvl++
         }
 
         harakat.x += path.x
@@ -196,6 +208,7 @@ function ren(){
     
     ctx.font = `bold ${0.04*tusiqcha}px arial`
     ctx.fillText("Kroshivo by Adxamjon",  0.01*tusiqcha, 0.05*tusiqcha)
+    ctx.fillText(`lvl: ${lvl}`,  0.01*tusiqcha, 0.09*tusiqcha)
 
     ctx.fill()
     requestAnimationFrame(ren)
