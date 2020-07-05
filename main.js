@@ -96,9 +96,7 @@ function husob(){ // harakatlanish kordinatasini husoblash
     path = { x: -a/c * speed, y: -b/c * speed }
 }
 
-function boshlandi(){
-
-}
+// function boshlandi(){}
 
 var harakat = { x: 0, y: 0 }
 var devor = {
