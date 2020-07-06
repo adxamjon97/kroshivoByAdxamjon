@@ -33,13 +33,13 @@ var ekran = {
 can.width  = ekran.width
 can.height = ekran.height
 
-can.style.backgroundColor = '#bbb'
+can.style.backgroundColor  = '#bbb'
 body.style.backgroundColor = "black"
 // div.style.textAlign = 'center'
 
 var mouse = { x: 0, y: 0 }
 // sharlarni ko'p qilib yaratish uchun
-class sharik{
+class Sharik{
     // fix construktor o'zgaruvchilarini obyekt ko'rinishida qabul qilish
     constructor(startX, startY, x, y,toX, toY){ // yo'naltirilgan kordinatlari
         this.startX = startX
@@ -52,8 +52,8 @@ class sharik{
 }
 
 var kord = {
-    x1: ekran.width/2, y1: 0,
-    x2: 0, y2: 0
+    x1: ekran.width/2, y1: 0, //ekran.width/2
+    x2: 0, y2: 0 
 }
 var bosildimi = false
 function down(){
@@ -80,6 +80,7 @@ function up(e){
     bosildimi = false
     quyvarildimi = true
     if(kord.x1!==kord.x2 && kord.y1!==kord.y2) husob()
+    let sharik = new Sharik(kord.x1, kord.y1, harakat.x, harakat.y, path.x, path.y)
     document.removeEventListener('touchstart', down)
     can.removeEventListener("mousedown", down)
     document.removeEventListener('touchend', (e) => up(e.changedTouches[0]))
@@ -108,9 +109,8 @@ function husob(){ // harakatlanish kordinatasini husoblash
 }
 
 // function boshlandi(){}
-
 var harakat = { x: 0, y: 0 }
-var devor = {
+var devor   = {
     x1: 0, y1: 0,
     x2: ekran.width, y2: ekran.height
 }
@@ -179,17 +179,25 @@ function ren(){
 
     if(quyvarildimi){
         // devorlarga urilganda yo'nalishni o'zgartiradi
-        if(devor.x1 >= harakat.x-radius || devor.x2+devor.x1 <= harakat.x+radius){
+        if(devor.x1 >= harakat.x-radius && path.x < 0){
             ping.load()
             path.x = -path.x
             ping.play()
-        } else ellips(harakat.x, harakat.y)
+        }else if(devor.x2+devor.x1 <= harakat.x+radius && path.x > 0){
+            ping.load()
+            path.x = -path.x
+            ping.play()
+        }else ellips(harakat.x, harakat.y)
         
-        if(devor.y1 >= harakat.y-radius || devor.y2+devor.y1 <= harakat.y+radius){
+        if(devor.y1 >= harakat.y-radius && path.y < 0){
             pong.load()
             path.y = -path.y
             pong.play()
-        } else ellips(harakat.x, harakat.y)
+        }else if( devor.y2+devor.y1 <= harakat.y+radius && path.y > 0){
+            pong.load()
+            path.y = -path.y
+            pong.play()
+        }else ellips(harakat.x, harakat.y)
         
         if(harakat.y >= tusiq.y1 && path.y > 0){
             path = { x: 0, y: 0 }
