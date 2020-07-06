@@ -50,9 +50,9 @@ class Sharik{
         this.toY = toY
     }
 }
-
+var tusiqcha = ekran.height*90/100
 var kord = {
-    x1: ekran.width/2, y1: 0, //ekran.width/2
+    x1: ekran.width/2, y1: tusiqcha, //ekran.width/2
     x2: 0, y2: 0 
 }
 var bosildimi = false
@@ -60,39 +60,36 @@ function down(){
     // kord.x1 = ekran.width/2
     kord.y1 = tusiqcha
     bosildimi = true
-    quyvarildimi = false
     path = { x: 0, y: 0 } 
 }
 document.addEventListener('touchstart', down)
-can.addEventListener('mousedown', down)
+document.addEventListener('mousedown',  down)
 
 function move(e){
     mouse.x = e.pageX
     mouse.y = e.pageY
 }
 document.addEventListener('touchmove', (e) => move(e.changedTouches[0]))
-can.addEventListener('mousemove', move)
+document.addEventListener('mousemove', move)
 
-var quyvarildimi = false
 function up(e){
     kord.x2 = e.pageX
     kord.y2 = e.pageY
     bosildimi = false
-    quyvarildimi = true
     if(kord.x1!==kord.x2 && kord.y1!==kord.y2) husob()
     let sharik = new Sharik(kord.x1, kord.y1, harakat.x, harakat.y, path.x, path.y)
     document.removeEventListener('touchstart', down)
-    can.removeEventListener("mousedown", down)
+    document.removeEventListener("mousedown",  down)
     document.removeEventListener('touchend', (e) => up(e.changedTouches[0]))
-    can.removeEventListener("mouseup", up)
+    document.removeEventListener("mouseup",  up)
     
 }
-document.addEventListener('touchend',(e) => up(e.changedTouches[0]))
-can.addEventListener('mouseup', up)
+document.addEventListener('touchend', (e) => up(e.changedTouches[0]))
+document.addEventListener('mouseup',  up)
 document.addEventListener('contextmenu', (e) => { e.preventDefault() })
 
 // FIX: sayt zagruska bo'lmasdan grafik xajmi o'zgarishi kerek
-window.addEventListener('resize', (event) => {
+window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout)
     var resizeTimeout = setTimeout(() => {
         window.location.reload()
@@ -109,7 +106,8 @@ function husob(){ // harakatlanish kordinatasini husoblash
 }
 
 // function boshlandi(){}
-var harakat = { x: 0, y: 0 }
+// var harakat = { x: 0, y: 0 }
+var harakat = { x: kord.x1, y: kord.y1 }
 var devor   = {
     x1: 0, y1: 0,
     x2: ekran.width, y2: ekran.height
@@ -144,13 +142,12 @@ function analiz(){
         iter += 20
     }
 }
-var tusiqcha = ekran.height*90/100
 var tusiq = {
     x1: 0,           y1: ekran.height*90/100,
     x2: ekran.width, y2: ekran.height*90/100
 }
 function ren(){
-    ctx.clearRect(0, 0, ekran.width, ekran.height);
+    ctx.clearRect(0, 0, ekran.width, ekran.height)
     
     ctx.lineWidth = 0.005*tusiqcha
     ctx.setLineDash([10,0])
@@ -175,9 +172,7 @@ function ren(){
         ctx.stroke()
 
         harakat = { x: kord.x1, y: kord.y1 }
-    }
-
-    if(quyvarildimi){
+    }else{
         // devorlarga urilganda yo'nalishni o'zgartiradi
         if(devor.x1 >= harakat.x-radius && path.x < 0){
             ping.load()
@@ -203,9 +198,9 @@ function ren(){
             path = { x: 0, y: 0 }
             kord.x1 = harakat.x
             document.addEventListener('touchstart', down)
-            can.addEventListener('mousedown', down)
-            document.addEventListener('touchend',(e) => up(e.changedTouches[0]))
-            can.addEventListener('mouseup', up)
+            document.addEventListener('mousedown',  down)
+            document.addEventListener('touchend', (e) => up(e.changedTouches[0]))
+            document.addEventListener('mouseup',  up)
             lvl++
         }
 
