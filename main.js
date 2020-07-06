@@ -207,23 +207,17 @@ function ren(){
                 shar.ping.play()
             } else ellips(shar.x, shar.y)
             
-            
-            
             if(shar.y >= tusiq.y1 && shar.toY > 0){
-                // path = { x: 0, y: 0 }
                 shar.toX = 0
                 shar.toY = 0
                 kord.x1 = shar.x
                 lvl++
                 
-                // alert('ishladi1')
-                // alert(sharlarQaytdi + ' ' + shariklar.length)
                 if(sharlarQaytdi==shariklar.length){
                     document.addEventListener('touchstart', down)
                     document.addEventListener('mousedown',  down)
                     document.addEventListener('touchend', (e) => up(e.changedTouches[0]))
                     document.addEventListener('mouseup',  up)
-                    // alert('ishladi2')
                     shariklar = []
                 }
 
@@ -232,30 +226,6 @@ function ren(){
             shar.x += shar.toX
             shar.y += shar.toY
         }
-        
-        // if(devor.x1 >= harakat.x-radius && path.x < 0){
-        //     ping.load()
-        //     path.x = -path.x
-        //     ping.play()
-        // }else if(devor.x2+devor.x1 <= harakat.x+radius && path.x > 0){
-        //     ping.load()
-        //     path.x = -path.x
-        //     ping.play()
-        // }else ellips(harakat.x, harakat.y)
-        
-        // if(devor.y1 >= harakat.y-radius && path.y < 0){
-        //     pong.load()
-        //     path.y = -path.y
-        //     pong.play()
-        // }else if( devor.y2+devor.y1 <= harakat.y+radius && path.y > 0){
-        //     pong.load()
-        //     path.y = -path.y
-        //     pong.play()
-        // }else ellips(harakat.x, harakat.y)
-        
-        // harakat.x += path.x
-        // harakat.y += path.y
-        // ---------------------------
     }
     ctx.fill()
 
