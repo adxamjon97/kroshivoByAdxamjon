@@ -19,10 +19,7 @@ let ctx = can.getContext("2d")
 let start = new Audio()
 start.src = "start.mp3"
 // start.play()
-let ping = new Audio()
-ping.src = "pong.mp3"
-let pong = new Audio()
-pong.src = "pong.mp3"
+
 
 
 var ekran = {
@@ -35,19 +32,29 @@ can.height = ekran.height
 
 can.style.backgroundColor  = '#bbb'
 body.style.backgroundColor = "black"
-// div.style.textAlign = 'center'
 
 var mouse = { x: 0, y: 0 }
 // sharlarni ko'p qilib yaratish uchun
 class Sharik{
     // fix construktor o'zgaruvchilarini obyekt ko'rinishida qabul qilish
-    constructor(startX, startY, x, y,toX, toY){ // yo'naltirilgan kordinatlari
+    /**
+     * 
+     * @param {boshlang'ich kordinatasi x} startX 
+     * @param {boshlang'ich kordinatasi y} startY 
+     * @param {turgan kordinatasi x} x 
+     * @param {turgan kordinatasi y} y 
+     * @param {keyingi kordinataga qatam x} toX 
+     * @param {keyingi kordinataga qatam y} toY 
+     */
+    constructor(startX, startY, x, y, toX, toY){ // yo'naltirilgan kordinatlari
         this.startX = startX
         this.startY = startY  // boshlang'ich kordinatasi
         this.x = x //turgan kordinatasi
         this.y = y
         this.toX = toX // qo'shilib boruvchi kordinatasi
         this.toY = toY
+        this.ping = new Audio()
+        this.ping.src = "pong.mp3"
     }
 }
 var tusiqcha = ekran.height*90/100
@@ -72,12 +79,23 @@ function move(e){
 document.addEventListener('touchmove', (e) => move(e.changedTouches[0]))
 document.addEventListener('mousemove', move)
 
+var lvl = 1
+var shariklar = []
 function up(e){
     kord.x2 = e.pageX
     kord.y2 = e.pageY
     bosildimi = false
     if(kord.x1!==kord.x2 && kord.y1!==kord.y2) husob()
-    let sharik = new Sharik(kord.x1, kord.y1, harakat.x, harakat.y, path.x, path.y)
+    // alert(shariklar.length)
+    for(let i = 0, j = 1; i<lvl; i++, j+=40){
+        if(shariklar.length<1){
+            shariklar.push(new Sharik(kord.x1, kord.y1, harakat.x, harakat.y, path.x, path.y))
+        }else{
+            setTimeout(()=>{
+                shariklar.push(new Sharik(kord.x1, kord.y1, harakat.x, harakat.y, path.x, path.y))
+            }, j)
+        }
+    }
     document.removeEventListener('touchstart', down)
     document.removeEventListener("mousedown",  down)
     document.removeEventListener('touchend', (e) => up(e.changedTouches[0]))
@@ -122,7 +140,6 @@ function ellips(x, y){
     ctx.fill()
 }
 
-var lvl = 1
 function analiz(){
     ctx.font = "20px arial"
     
@@ -146,6 +163,7 @@ var tusiq = {
     x1: 0,           y1: ekran.height*90/100,
     x2: ekran.width, y2: ekran.height*90/100
 }
+var sharlarQaytdi = 1
 function ren(){
     ctx.clearRect(0, 0, ekran.width, ekran.height)
     
@@ -174,38 +192,70 @@ function ren(){
         harakat = { x: kord.x1, y: kord.y1 }
     }else{
         // devorlarga urilganda yo'nalishni o'zgartiradi
-        if(devor.x1 >= harakat.x-radius && path.x < 0){
-            ping.load()
-            path.x = -path.x
-            ping.play()
-        }else if(devor.x2+devor.x1 <= harakat.x+radius && path.x > 0){
-            ping.load()
-            path.x = -path.x
-            ping.play()
-        }else ellips(harakat.x, harakat.y)
+        // --------------------------
         
-        if(devor.y1 >= harakat.y-radius && path.y < 0){
-            pong.load()
-            path.y = -path.y
-            pong.play()
-        }else if( devor.y2+devor.y1 <= harakat.y+radius && path.y > 0){
-            pong.load()
-            path.y = -path.y
-            pong.play()
-        }else ellips(harakat.x, harakat.y)
-        
-        if(harakat.y >= tusiq.y1 && path.y > 0){
-            path = { x: 0, y: 0 }
-            kord.x1 = harakat.x
-            document.addEventListener('touchstart', down)
-            document.addEventListener('mousedown',  down)
-            document.addEventListener('touchend', (e) => up(e.changedTouches[0]))
-            document.addEventListener('mouseup',  up)
-            lvl++
-        }
+        for(let shar of shariklar){
+            if(devor.x1 >= shar.x-radius && shar.toX < 0 || devor.x2+devor.x1 <= shar.x+radius && shar.toX > 0){
+                shar.ping.load()
+                shar.toX = -shar.toX
+                shar.ping.play()
+            } else ellips(shar.x, shar.y)
+            
+            if(devor.y1 >= shar.y-radius && shar.toY < 0 || devor.y2+devor.y1 <= shar.y+radius && shar.toY > 0){
+                shar.ping.load()
+                shar.toY = -shar.toY
+                shar.ping.play()
+            } else ellips(shar.x, shar.y)
+            
+            
+            
+            if(shar.y >= tusiq.y1 && shar.toY > 0){
+                // path = { x: 0, y: 0 }
+                shar.toX = 0
+                shar.toY = 0
+                kord.x1 = shar.x
+                lvl++
+                
+                // alert('ishladi1')
+                // alert(sharlarQaytdi + ' ' + shariklar.length)
+                if(sharlarQaytdi==shariklar.length){
+                    document.addEventListener('touchstart', down)
+                    document.addEventListener('mousedown',  down)
+                    document.addEventListener('touchend', (e) => up(e.changedTouches[0]))
+                    document.addEventListener('mouseup',  up)
+                    // alert('ishladi2')
+                    shariklar = []
+                }
 
-        harakat.x += path.x
-        harakat.y += path.y
+                sharlarQaytdi++
+            }
+            shar.x += shar.toX
+            shar.y += shar.toY
+        }
+        
+        // if(devor.x1 >= harakat.x-radius && path.x < 0){
+        //     ping.load()
+        //     path.x = -path.x
+        //     ping.play()
+        // }else if(devor.x2+devor.x1 <= harakat.x+radius && path.x > 0){
+        //     ping.load()
+        //     path.x = -path.x
+        //     ping.play()
+        // }else ellips(harakat.x, harakat.y)
+        
+        // if(devor.y1 >= harakat.y-radius && path.y < 0){
+        //     pong.load()
+        //     path.y = -path.y
+        //     pong.play()
+        // }else if( devor.y2+devor.y1 <= harakat.y+radius && path.y > 0){
+        //     pong.load()
+        //     path.y = -path.y
+        //     pong.play()
+        // }else ellips(harakat.x, harakat.y)
+        
+        // harakat.x += path.x
+        // harakat.y += path.y
+        // ---------------------------
     }
     ctx.fill()
 
