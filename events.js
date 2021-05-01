@@ -1,16 +1,15 @@
-import Sharik from "/sharik.js"
-import {ekran, device} from "/dom.js"
+var bosildimi = false
 
-export var bosildimi = false
 function down(){ bosildimi = true }
 
-export var mouse = { x: 0, y: 0 }
+var mouse = { x: 0, y: 0 }
+
 function move(e){
     mouse.x = e.pageX
     mouse.y = e.pageY
 }
 
-export var lvl = 1,
+var lvl = 1,
     shariklar = [],
     tusiqcha  = ekran.height*90/100,
     tuxtadi   = ekran.width/2
@@ -20,44 +19,64 @@ var kord = {
     x2: 0, y2: 0 
 }
 
-export var harakat = { x: kord.x1, y: kord.y1 }
+var harakat = { x: kord.x1, y: kord.y1 }
             
 const speed = 15   // tezlik
+
 function up(e){
     bosildimi = false
+    
     let a = tuxtadi  - e.pageX
     let b = tusiqcha - e.pageY
     let c = Math.sqrt(a**2 + b**2)
-    shariklar.push(new Sharik(tuxtadi, tusiqcha, harakat.x, harakat.y, -a/c * speed, -b/c * speed))
+    
+    shariklar.push(
+    	new Sharik(tuxtadi, tusiqcha, 
+    		harakat.x, harakat.y, 
+    		-a/c * speed, -b/c * speed
+    	))
+    
     console.log(shariklar.length)
+    
     eventClear()
 }
+
+
+
 function eventClear(){
-    if(device == "mouse" || device == "all"){
-        document.removeEventListener("mousedown", down)
-        document.removeEventListener('mousemove', move)
-        document.removeEventListener("mouseup",   up)
+	let drel = (t,e) => document.removeEventListener(t,e)
+	
+	let devall = device == "all"
+	
+    if(device == "mouse" || devall){
+        drel("mousedown", down)
+        drel('mousemove', move)
+        drel("mouseup",   up)
     }
 
-    if(device == "touch" || device == "all"){
-        document.removeEventListener('touchstart', down)
-        document.removeEventListener('touchmove',  (e) => move(e.changedTouches[0]))
-        document.removeEventListener('touchend',   (e) => up(e.changedTouches[0]))
+    if(device == "touch" || devall){
+        drel('touchstart', down)
+        drel('touchmove',  (e) => move(e.changedTouches[0]))
+        drel('touchend',   (e) =>   up(e.changedTouches[0]))
     }    
 }
 
-export function eventStart(){
-    if(device == "mouse" || device == "all"){
-        document.addEventListener('mousedown', down)
-        document.addEventListener('mousemove', move)
-        document.addEventListener('mouseup',   up)
-        document.addEventListener('contextmenu', (e) => { e.preventDefault() })
+let eventStart = () => {
+	let dael = (t,e) => document.addEventListener(t,e)
+	
+	let devall = device == "all"
+	
+    if(device == "mouse" || devall){
+        dael('mousedown', down)
+        dael('mousemove', move)
+        dael('mouseup',   up)
+        dael('contextmenu', (e) => { e.preventDefault() })
     }
     
-    if(device == "touch" || device == "all"){
-        document.addEventListener('touchstart', down)
-        document.addEventListener('touchmove', (e) => move(e.changedTouches[0]))
-        document.addEventListener('touchend',  (e) => up(e.changedTouches[0]))
+    if(device == "touch" || devall){
+        dael('touchstart', down)
+        dael('touchmove', (e) => move(e.changedTouches[0]))
+        dael('touchend',  (e) =>   up(e.changedTouches[0]))
     }
 }
 
@@ -65,6 +84,7 @@ export function eventStart(){
 // FIX: sayt zagruska bo'lmasdan grafik xajmi o'zgarishi kerek
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout)
+    
     var resizeTimeout = setTimeout(() => {
         window.location.reload()
     }, 1500)

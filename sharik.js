@@ -1,4 +1,4 @@
-export default class Sharik { // sharni tuzatish kere
+class Sharik { // sharni tuzatish kere
     /**
      * @param {boshlang'ich kordinatasi x} startX 
      * @param {boshlang'ich kordinatasi y} startY 

@@ -1,24 +1,25 @@
-export let device
-if(/Windows/i.test(navigator.userAgent)){
-    device = 'mouse'
-}else if(/Android/i.test(navigator.userAgent)){
-    device = 'touch'
-}else{
-    device = 'all'
-}
+let dce = e => document.createElement(e)
+let dde = document.documentElement
+let nua = navigator.userAgent
+
+let device
+
+if(     /Windows/i.test(nua)) device = 'mouse'
+else if(/Android/i.test(nua)) device = 'touch'
+else device = 'all'
 
 let body = document.body
 
-let div = document.createElement("div")
-let can = document.createElement("canvas")
+let div = dce("div")
+let can = dce("canvas")
 
 body.appendChild(div).appendChild(can)
 
-export let ctx = can.getContext("2d")
+let ctx = can.getContext("2d")
 
-export var ekran = {
-    width:  document.documentElement.clientWidth<=560?document.documentElement.clientWidth:560,
-    height: document.documentElement.clientHeight-4
+var ekran = {
+    width:  dde.clientWidth<=560 ? dde.clientWidth : 560,
+    height: dde.clientHeight-4
 }
 
 can.width  = ekran.width
